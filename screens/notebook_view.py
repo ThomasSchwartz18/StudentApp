@@ -128,9 +128,41 @@ class NotebookView(tk.Toplevel):
         for widget in self.right_frame.winfo_children():
             widget.destroy()
 
-        page_label = ttk.Label(self.right_frame, text=f"{notebook} - {page}", font=("Helvetica", 14))
-        page_label.pack(side="top", pady=10)
+        # Editable page name
+        name_frame = ttk.Frame(self.right_frame)
+        name_frame.pack(side="top", fill="x", pady=10)
 
+        ttk.Label(name_frame, text=f"{notebook} - ", font=("Helvetica", 14)).pack(side="left")
+
+        page_name_entry = ttk.Entry(name_frame, font=("Helvetica", 14), width=20)
+        page_name_entry.insert(0, page)
+        page_name_entry.pack(side="left")
+
+        def save_page_name(event=None):
+            """Save the updated page name."""
+            new_page_name = page_name_entry.get().strip()
+            if new_page_name and new_page_name != page:
+                # Check for duplicate names
+                if new_page_name in self.pages[notebook]:
+                    tk.messagebox.showwarning("Duplicate Name", "A page with this name already exists!")
+                    page_name_entry.delete(0, tk.END)
+                    page_name_entry.insert(0, page)
+                    return
+
+                # Update the page name in self.pages
+                self.pages[notebook][new_page_name] = self.pages[notebook].pop(page)
+                self.save_pages()
+                self.selected_page = new_page_name
+                self.refresh_notebook_list()
+            elif not new_page_name:
+                tk.messagebox.showwarning("Invalid Name", "Page name cannot be empty!")
+                page_name_entry.delete(0, tk.END)
+                page_name_entry.insert(0, page)
+
+        # Bind the focus-out event to save the page name automatically
+        page_name_entry.bind("<FocusOut>", save_page_name)
+
+        # Page content editing
         page_text = tk.Text(self.right_frame, wrap="word", font=("Helvetica", 12))
         page_text.pack(fill="both", expand=True)
 
@@ -140,12 +172,11 @@ class NotebookView(tk.Toplevel):
 
         def save_page_content():
             """Save the edited page content."""
-            self.pages[notebook][page] = page_text.get("1.0", tk.END).strip()
+            self.pages[notebook][self.selected_page] = page_text.get("1.0", tk.END).strip()
             self.save_pages()
 
-        save_button = ttk.Button(self.right_frame, text="Save", command=save_page_content)
+        save_button = ttk.Button(self.right_frame, text="Save Content", command=save_page_content)
         save_button.pack(side="bottom", pady=10)
-
 
     def delete_selected_notebook(self):
         """Delete the selected notebook."""

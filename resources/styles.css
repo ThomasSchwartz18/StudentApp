@@ -1,0 +1,26 @@
+/* Apply to all widgets */
+QWidget {
+    background-color: #f9f9f9;
+    font-family: Arial;
+    font-size: 14px;
+}
+
+/* Style for buttons */
+QPushButton {
+    background-color: #9C8676;
+    color: white;
+    border: none;
+    padding: 0px;
+    border-radius: 4px;
+}
+
+/* Hover effect for buttons */
+QPushButton:hover {
+    background-color: #C3A793;
+}
+
+/* Style for text editors */
+QTextEdit {
+    border: 1px solid #ccc;
+    padding: 0px;
+}

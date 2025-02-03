@@ -4,8 +4,8 @@
 APP_TITLE = "Note & Calendar App"
 
 # Dimensions for the main application window.
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 700
 
 # Example shortcut definitions (used elsewhere if needed).
 SHORTCUT_BOLD = "Ctrl+B"

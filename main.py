@@ -1,10 +1,10 @@
-# main.py
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout
 from PyQt5.QtCore import Qt
 from utils.resource_loader import load_stylesheet  # Utility for loading stylesheets
 import config  # Application configuration constants
 from components.floating_control import FloatingControl  # Import the floating control widget
+from components.custom_title_bar import CustomTitleBar  # Import the custom title bar widget
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -24,9 +24,9 @@ class MainWindow(QMainWindow):
                 background: qlineargradient(
                     x1: 0, y1: 0,
                     x2: 0, y2: 1,
-                    stop: 0 rgba(255, 255, 255, 200),
-                    stop: 0.5 rgba(255, 255, 255, 150),
-                    stop: 1 rgba(255, 255, 255, 100)
+                    stop: 0 rgba(255, 245, 230, 200),  /* Very light tan (almost white) with transparency */
+                    stop: 0.5 rgba(255, 245, 230, 150),  /* Very light tan (almost white) with transparency */
+                    stop: 1 rgba(255, 245, 230, 100)  /* Very light tan (almost white) with transparency */
                 );
                 border: 1px solid rgba(255, 255, 255, 100);
                 border-radius: 10px;
@@ -38,6 +38,13 @@ class MainWindow(QMainWindow):
         self.layout = QVBoxLayout(self.central_widget)
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
+
+        # Add the custom title bar
+        self.title_bar = CustomTitleBar(self)
+        self.layout.addWidget(self.title_bar)
+
+        # Connect the close signal from the title bar to the close method
+        self.title_bar.close_signal.connect(self.close)
 
         # Maintain a history of views for navigation.
         self.view_history = []
@@ -88,8 +95,8 @@ class MainWindow(QMainWindow):
         """
         Creates and displays the Dashboard view.
         """
-        if self.layout.count() > 0:
-            current_view = self.layout.itemAt(0).widget()
+        if self.layout.count() > 1:  # Check if there's more than just the title bar
+            current_view = self.layout.itemAt(1).widget()
             self.view_history.append(current_view)
             current_view.deleteLater()
         from views.dashboard_view import DashboardView  # Import here to avoid circular dependencies.
@@ -103,51 +110,13 @@ class MainWindow(QMainWindow):
         Args:
             view_widget (QWidget): The new view widget to display.
         """
-        if self.layout.count() > 0:
-            current_view = self.layout.itemAt(0).widget()
+        if self.layout.count() > 1:  # Check if there's more than just the title bar
+            current_view = self.layout.itemAt(1).widget()
             self.view_history.append(current_view)
             current_view.hide()
             self.layout.removeWidget(current_view)
         self.layout.addWidget(view_widget)
         view_widget.show()
-
-    def resizeEvent(self, event):
-        """
-        Repositions the floating control widget to the bottom-left corner on window resize.
-        """
-        margin = 20  # Distance from the window edges.
-        x = margin  # Position on the left side.
-        y = self.height() - self.floating_control.height() - margin
-        self.floating_control.move(x, y)
-        super().resizeEvent(event)
-
-    def mousePressEvent(self, event):
-        """
-        Detects mouse clicks in the application window.
-        If clicked outside the floating control, collapse the control to its circle.
-        """
-        if not self.floating_control.rect().contains(self.floating_control.mapFromGlobal(event.globalPos())):
-            self.floating_control.collapse()
-        super().mousePressEvent(event)
-        
-    def label_toggle_mousePressEvent(self, event):
-        """Start dragging the main window if clicking and holding on the floating image."""
-        if event.button() == Qt.LeftButton:
-            self.is_dragging = True
-            self.offset = event.globalPos() - self.parent().frameGeometry().topLeft()
-            event.accept()
-
-    def label_toggle_mouseMoveEvent(self, event):
-        """Move the main application window when dragging the floating control."""
-        if self.is_dragging:
-            new_position = event.globalPos() - self.offset
-            self.parent().move(new_position)
-            event.accept()
-
-    def label_toggle_mouseReleaseEvent(self, event):
-        """Stop dragging when the mouse is released."""
-        self.is_dragging = False
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

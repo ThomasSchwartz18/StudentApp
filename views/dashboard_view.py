@@ -57,7 +57,7 @@ class DashboardView(QWidget):
         splitter.setHandleWidth(2)
         splitter.setStyleSheet("""
             QSplitter::handle {
-                border: 1px dotted #888;
+                border: 1px dotted #c9c3be;
                 background: transparent;
             }
         """)
@@ -73,7 +73,7 @@ class DashboardView(QWidget):
         # Button to open the Calendar view.
         calendar_button = create_button(
             left_widget,
-            "Open Calendar",
+            "Calendar",
             self.show_calendar  # Calls the method to update the right section.
         )
         left_layout.addWidget(calendar_button)
@@ -81,7 +81,7 @@ class DashboardView(QWidget):
         # Button to open the Notes view.
         notes_button = create_button(
             left_widget,
-            "Open Notes",
+            "Notes",
             self.show_notes  # Calls the method to update the right section.
         )
         left_layout.addWidget(notes_button)

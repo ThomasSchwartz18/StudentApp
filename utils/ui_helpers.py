@@ -62,7 +62,7 @@ def create_button(parent, text, command, **options):
         "font-size": "14px",
         "font-family": "Arial",
         "border": "none",  # Clear any default borders.
-        "border-bottom": "2px solid #9C8676"  # Only bottom border.
+        "border-bottom": "2px solid #c9c3be"  # Only bottom border.
     }
     # Default hover style.
     hover_default = {

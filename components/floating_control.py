@@ -4,10 +4,10 @@ from PyQt5.QtCore import Qt, QPropertyAnimation, QSize
 
 class FloatingControl(QWidget):
     """
-    A floating control widget that sits in the bottom-right corner.
+    A floating control widget that sits in the bottom-left corner.
     Initially, it displays an image as the toggle button. When clicked, it grows
     vertically with straight sides but circular top and bottom, revealing the
-    close (X) and minimize (–) buttons inside the expanded circle, moving upwards.
+    calendar and notes buttons inside the expanded circle, moving upwards.
     The image (home-64.png) stays static while everything else functions as expected.
     """
     def __init__(self, parent=None):
@@ -21,11 +21,11 @@ class FloatingControl(QWidget):
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(5)
 
-        # Create the close and minimize buttons (initially hidden) and scale them down.
+        # Create the calendar and notes buttons (initially hidden) and scale them down.
         button_size = 30  # Scale down the button size
-        self.btn_close = QPushButton("X", self)
-        self.btn_minimize = QPushButton("–", self)
-        for btn in (self.btn_close, self.btn_minimize):
+        self.btn_calendar = QPushButton("📅", self)  # Calendar button with emoji
+        self.btn_notes = QPushButton("📝", self)     # Notes button with emoji
+        for btn in (self.btn_calendar, self.btn_notes):
             btn.setFixedSize(button_size, button_size)
             btn.setStyleSheet("""
                 QPushButton {
@@ -33,6 +33,7 @@ class FloatingControl(QWidget):
                     color: white;
                     border: none;
                     border-radius: 15px;
+                    font-size: 16px;
                 }
                 QPushButton:hover {
                     background-color: #a6a19d;
@@ -56,13 +57,13 @@ class FloatingControl(QWidget):
         # Connect the toggle label to expand/collapse.
         self.label_toggle.mousePressEvent = self.toggle_expand
 
-        # Connect the close and minimize actions.
-        self.btn_close.clicked.connect(self.close_app)
-        self.btn_minimize.clicked.connect(self.minimize_app)
+        # Connect the calendar and notes buttons to their respective actions.
+        self.btn_calendar.clicked.connect(self.show_calendar)
+        self.btn_notes.clicked.connect(self.show_notes)
 
         # Add the buttons and label to the layout in reverse order to make them appear above the toggle label.
-        self.layout.addWidget(self.btn_close, alignment=Qt.AlignCenter)
-        self.layout.addWidget(self.btn_minimize, alignment=Qt.AlignCenter)
+        self.layout.addWidget(self.btn_calendar, alignment=Qt.AlignCenter)
+        self.layout.addWidget(self.btn_notes, alignment=Qt.AlignCenter)
         self.layout.addWidget(self.label_toggle, alignment=Qt.AlignCenter)
 
         # Set the initial size of the widget to match the toggle label.
@@ -102,7 +103,7 @@ class FloatingControl(QWidget):
 
     def expand(self):
         # Calculate the expanded height (height of all buttons + spacing).
-        expanded_height = self.label_toggle.height() + self.btn_close.height() + self.btn_minimize.height() + 10  # 10 for spacing.
+        expanded_height = self.label_toggle.height() + self.btn_calendar.height() + self.btn_notes.height() + 10  # 10 for spacing.
         self.animation.setStartValue(self.size())
         self.animation.setEndValue(QSize(50, expanded_height))
         self.animation.start()
@@ -138,21 +139,25 @@ class FloatingControl(QWidget):
 
         # Show or hide buttons based on the animation progress.
         if height > 60:  # Threshold to reveal buttons.
-            self.btn_close.show()
-            self.btn_minimize.show()
+            self.btn_calendar.show()
+            self.btn_notes.show()
         else:
-            self.btn_close.hide()
-            self.btn_minimize.hide()
+            self.btn_calendar.hide()
+            self.btn_notes.hide()
 
         # Ensure the label_toggle is always visible and centered.
         self.label_toggle.show()
 
-    def close_app(self):
-        # Close the main application window.
+    def show_calendar(self):
+        """
+        Triggers the calendar view in the main window.
+        """
         if self.parent():
-            self.parent().close()
+            self.parent().show_calendar()
 
-    def minimize_app(self):
-        # Minimize the main application window.
+    def show_notes(self):
+        """
+        Triggers the notes view in the main window.
+        """
         if self.parent():
-            self.parent().showMinimized()
+            self.parent().show_notes()

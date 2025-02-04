@@ -15,7 +15,9 @@ check_list = """**What is done:**
     * backgroud transparency...............................................02/02/2025
         [background of application is transparent]
     * control menu.........................................................02/03/2025
-        [menu to close and minimize application]
+        [menu to got to notes and calendar]
+    * Title bar............................................................02/03/2025
+        [Allows for minimizing and exiting]
 
 **To-Dos:**
     * Work on note taking..................................................
@@ -53,12 +55,13 @@ class DashboardView(QWidget):
         """
         # Create a horizontal splitter for the left (navigation) and right (content) sections.
         splitter = QSplitter(Qt.Horizontal, self)
+        
         # Set the handle to be a thin, dotted line.
-        splitter.setHandleWidth(2)
+        splitter.setHandleWidth(2)  # Adjust the width of the splitter handle.
         splitter.setStyleSheet("""
             QSplitter::handle {
-                border: 1px dotted #c9c3be;
-                background: transparent;
+                border: 2px dotted #c9c3be;  /* Dotted line with a light gray color */
+                # background: transparent;     /* Transparent background for the handle */
             }
         """)
 
@@ -104,8 +107,10 @@ class DashboardView(QWidget):
         # Add the two sections to the splitter.
         splitter.addWidget(left_widget)
         splitter.addWidget(self.right_widget)
+        
         # Set the initial sizes for the left and right sections.
-        splitter.setSizes([200, 600])
+        # The left section will have a fixed width of 200 pixels, and the right section will take the rest.
+        splitter.setSizes([0, self.width() - 200])
 
         # -----------------------------
         # Main Layout: Add the splitter with no padding.
@@ -116,6 +121,10 @@ class DashboardView(QWidget):
         main_layout.addWidget(splitter)
         self.setLayout(main_layout)
 
+        # Ensure the left section stays fixed when the window is resized.
+        splitter.setStretchFactor(0, 0)  # Left section (index 0) will not stretch.
+        splitter.setStretchFactor(1, 1)  # Right section (index 1) will stretch.
+        
     def update_right_section(self, widget):
         """
         Clears the right section and adds the provided widget.

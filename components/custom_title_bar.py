@@ -33,7 +33,7 @@ class CustomTitleBar(QWidget):
         layout.setSpacing(5)
 
         # Title label
-        self.title_label = QLabel("My Application")
+        self.title_label = QLabel("App")
         self.title_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         layout.addWidget(self.title_label)
 

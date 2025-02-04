@@ -59,7 +59,7 @@ class MainWindow(QMainWindow):
 
     def resizeEvent(self, event):
         """
-        Repositions the floating control widget to the bottom-right corner on window resize.
+        Repositions the floating control widget to the bottom-left corner on window resize.
         """
         self.update_floating_control_position()
         super().resizeEvent(event)
@@ -67,16 +67,16 @@ class MainWindow(QMainWindow):
     def update_floating_control_position(self):
         """
         Update the position of the floating control widget based on the window size.
-        It is placed in the bottom-right corner with a 100px margin from the bottom edge.
+        It is placed in the bottom-left corner with a 20px margin from the edges.
         """
-        margin = 20  # Distance from the right side
-        vertical_offset = 100  # Distance from the bottom to move the floating widget higher
-
+        margin = 20  # Distance from the window edges
+        vertical_offset = 20 # Distance from the bottom to move the floating widget higher
+        
         # Ensure the floating control widget size is fully calculated
         self.floating_control.adjustSize()
 
         # Calculate the new x and y position
-        x = self.width() - self.floating_control.width() - margin  # Right side
+        x = margin  # Position on the left side
         y = self.height() - self.floating_control.height() - margin - vertical_offset  # Bottom side adjusted upwards
 
         # Set the new position of the floating control widget
@@ -117,7 +117,19 @@ class MainWindow(QMainWindow):
             self.layout.removeWidget(current_view)
         self.layout.addWidget(view_widget)
         view_widget.show()
+        
+    def show_calendar(self):
+        """
+        Displays the Calendar view in the right section.
+        """
+        self.dashboard_view.show_calendar()
 
+    def show_notes(self):
+        """
+        Displays the Notes view in the right section.
+        """
+        self.dashboard_view.show_notes()
+        
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     

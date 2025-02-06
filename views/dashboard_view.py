@@ -2,7 +2,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSplitter
 from PyQt5.QtCore import Qt
 from utils.ui_helpers import create_button, create_label
-from views.calendar_view import CalendarView
+from controllers.calendar_controller import CalendarController  # Import the CalendarController
 from views.notes_view import NotesView
 
 check_list = """**What is done:**
@@ -110,7 +110,7 @@ class DashboardView(QWidget):
         
         # Set the initial sizes for the left and right sections.
         # The left section will have a fixed width of 200 pixels, and the right section will take the rest.
-        splitter.setSizes([0, self.width() - 200])
+        splitter.setSizes([90, self.width() - 200])
 
         # -----------------------------
         # Main Layout: Add the splitter with no padding.
@@ -144,8 +144,8 @@ class DashboardView(QWidget):
         """
         Displays the Calendar view in the right section.
         """
-        calendar_view = CalendarView(self)
-        self.update_right_section(calendar_view)
+        calendar_controller = CalendarController(self)  # Create an instance of CalendarController
+        self.update_right_section(calendar_controller)  # Update the right section with the calendar view
 
     def show_notes(self):
         """

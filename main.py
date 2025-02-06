@@ -130,6 +130,12 @@ class MainWindow(QMainWindow):
         """
         self.dashboard_view.show_notes()
         
+    def go_home(self):
+        """
+        Resets the view to the dashboard home.
+        """
+        self.dashboard_view.go_back()  # Assuming `go_back` resets the view to the home screen.
+            
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     

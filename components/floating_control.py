@@ -7,7 +7,7 @@ class FloatingControl(QWidget):
     A floating control widget that sits in the bottom-left corner.
     Initially, it displays an image as the toggle button. When clicked, it grows
     vertically with straight sides but circular top and bottom, revealing the
-    calendar and notes buttons inside the expanded circle, moving upwards.
+    calendar, notes, and home buttons inside the expanded circle, moving upwards.
     The image (home-64.png) stays static while everything else functions as expected.
     """
     def __init__(self, parent=None):
@@ -21,11 +21,12 @@ class FloatingControl(QWidget):
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(5)
 
-        # Create the calendar and notes buttons (initially hidden) and scale them down.
+        # Create the calendar, notes, and home buttons (initially hidden) and scale them down.
         button_size = 30  # Scale down the button size
         self.btn_calendar = QPushButton("📅", self)  # Calendar button with emoji
         self.btn_notes = QPushButton("📝", self)     # Notes button with emoji
-        for btn in (self.btn_calendar, self.btn_notes):
+        self.btn_home = QPushButton("🏠", self)      # Home button with emoji
+        for btn in (self.btn_calendar, self.btn_notes, self.btn_home):
             btn.setFixedSize(button_size, button_size)
             btn.setStyleSheet("""
                 QPushButton {
@@ -57,13 +58,15 @@ class FloatingControl(QWidget):
         # Connect the toggle label to expand/collapse.
         self.label_toggle.mousePressEvent = self.toggle_expand
 
-        # Connect the calendar and notes buttons to their respective actions.
+        # Connect the calendar, notes, and home buttons to their respective actions.
         self.btn_calendar.clicked.connect(self.show_calendar)
         self.btn_notes.clicked.connect(self.show_notes)
+        self.btn_home.clicked.connect(self.go_home)
 
         # Add the buttons and label to the layout in reverse order to make them appear above the toggle label.
         self.layout.addWidget(self.btn_calendar, alignment=Qt.AlignCenter)
         self.layout.addWidget(self.btn_notes, alignment=Qt.AlignCenter)
+        self.layout.addWidget(self.btn_home, alignment=Qt.AlignCenter)
         self.layout.addWidget(self.label_toggle, alignment=Qt.AlignCenter)
 
         # Set the initial size of the widget to match the toggle label.
@@ -103,7 +106,13 @@ class FloatingControl(QWidget):
 
     def expand(self):
         # Calculate the expanded height (height of all buttons + spacing).
-        expanded_height = self.label_toggle.height() + self.btn_calendar.height() + self.btn_notes.height() + 10  # 10 for spacing.
+        expanded_height = (
+            self.label_toggle.height() +
+            self.btn_calendar.height() +
+            self.btn_notes.height() +
+            self.btn_home.height() +
+            15  # Additional spacing for the new button
+        )
         self.animation.setStartValue(self.size())
         self.animation.setEndValue(QSize(50, expanded_height))
         self.animation.start()
@@ -138,12 +147,14 @@ class FloatingControl(QWidget):
         """)
 
         # Show or hide buttons based on the animation progress.
-        if height > 60:  # Threshold to reveal buttons.
+        if height > 90:  # Threshold to reveal buttons (increased for the new button).
             self.btn_calendar.show()
             self.btn_notes.show()
+            self.btn_home.show()
         else:
             self.btn_calendar.hide()
             self.btn_notes.hide()
+            self.btn_home.hide()
 
         # Ensure the label_toggle is always visible and centered.
         self.label_toggle.show()
@@ -161,3 +172,10 @@ class FloatingControl(QWidget):
         """
         if self.parent():
             self.parent().show_notes()
+
+    def go_home(self):
+        """
+        Triggers the dashboard home view in the main window.
+        """
+        if self.parent():
+            self.parent().go_home()  # Ensure the parent has a `go_home` method.

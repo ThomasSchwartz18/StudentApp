@@ -1,0 +1,3 @@
+touch storage/.gitkeep
+git add storage/.gitkeep
+git commit -m "Keep storage folder while ignoring its contents"

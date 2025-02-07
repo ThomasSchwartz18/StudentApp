@@ -1,8 +1,10 @@
-# Ignore the storage folder (where task data is stored)
-tasks.json
+# Ignore all files inside the storage folder but keep the folder itself
+storage/*
+!storage/.gitkeep
 
 # Ignore all __pycache__ directories
 **/__pycache__/
 
-# ignore about document
-about.docx
+# Ignore specific file types (Word documents)
+*.docx
+*.doc

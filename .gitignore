@@ -3,3 +3,6 @@ tasks.json
 
 # Ignore all __pycache__ directories
 **/__pycache__/
+
+# ignore about document
+about.docx

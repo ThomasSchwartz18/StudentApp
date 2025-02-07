@@ -4,7 +4,3 @@ storage/*
 
 # Ignore all __pycache__ directories
 **/__pycache__/
-
-# Ignore specific file types (Word documents)
-*.docx
-*.doc
